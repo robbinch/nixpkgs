@@ -7,7 +7,7 @@
 }:
 mkDerivation {
   pname = "tinc";
-  version = "20160419";
+  version = "20160420";
   src = fetchFromGitHub {
     owner = "sol";
     repo = "tinc";
@@ -38,4 +38,5 @@ mkDerivation {
   homepage = "https://github.com/sol/tinc#readme";
   license = stdenv.lib.licenses.mit;
   maintainers = [ stdenv.lib.maintainers.robbinch ];
+  doCheck = false;
 }

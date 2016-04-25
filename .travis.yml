@@ -1,7 +1,24 @@
-language: python
-python: "3.4"
-sudo: required
-dist: trusty
-before_install: ./maintainers/scripts/travis-nox-review-pr.sh nix
-install: ./maintainers/scripts/travis-nox-review-pr.sh nox
-script: ./maintainers/scripts/travis-nox-review-pr.sh build
+sudo: false
+language: c
+
+before_install:
+  - bash <(curl -sSL https://github.com/robbinch/travis-nix-proot/raw/master/install)
+  - export PATH=$HOME/.travis-nix-proot/bin:$PATH
+  - travis-nix-proot setup
+
+install:
+  - travis-nix-proot nix-env -i git
+  - travis-nix-proot nix-env -i nox
+
+script:
+  - travis-nix-proot nix-env -f. -qa --json >/dev/null
+  - travis-nix-proot nix-build pkgs/top-level/release.nix -A tarball
+  #- travis-nix-proot nox-review pr 14943
+
+before_cache:
+  - travis-nix-proot gc
+  - travis-nix-proot dump-db
+
+cache:
+  directories:
+    - $HOME/travis-nix-proot.cache
